@@ -1,4 +1,4 @@
-name: Node.js CI/CD
+name: Node.js CICD
 
 on:
   push:
@@ -38,14 +38,14 @@ jobs:
     - name: Run tests
       run: npm test
 
-    - name: Build Docker image
+    - name: Docker image
       run: |
         docker build -t ghcr.io/${{ github.repository }}:latest .
         docker push ghcr.io/${{ github.repository }}:latest
       env:
         CR_PAT: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Send failure email if workflow fails
+    - name: Send failure email
       if: failure()
       run: |
         echo "Subject: GitHub Action Failure: ${{ github.repository }}" | sendmail -v -S smtp.gmail.com:587 -f ${{ secrets.MAIL_USERNAME }} -t ${{ secrets.MAIL_USERNAME }} -u "GitHub Action Failure" -m "The GitHub Action workflow has failed for the repository: ${{ github.repository }}."
